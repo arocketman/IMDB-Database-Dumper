@@ -14,7 +14,7 @@ public class DatabaseWorker {
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            PreparedStatement statement = c.prepareStatement("INSERT INTO movies (ID,Title,Actors,Rating,Year,plot,Genre) VALUES (?,?,?,?,?,?,?)");
+            PreparedStatement statement = c.prepareStatement("INSERT INTO movies (ID,Title,Actors,Rating,Year,plot,Genre,Poster) VALUES (?,?,?,?,?,?,?,?)");
             statement.setString(1,m.getId());
             statement.setString(2,m.getTitle());
             statement.setString(3,m.getActors());
@@ -22,6 +22,7 @@ public class DatabaseWorker {
             statement.setString(5,m.getYear());
             statement.setString(6,m.getPlot());
             statement.setString(7,m.getGenre());
+            statement.setString(8,m.getPoster());
             statement.executeUpdate();
 
             stmt.close();
