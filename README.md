@@ -5,7 +5,7 @@ This was used for a personal project, I figured someone could have some use for 
 
 First, create the DB : 
 
-    CREATE TABLE movies (ID STRING PRIMARY KEY, Title TEXT NOT NULL, Actors TEXT, Rating TEXT, Year TEXT, Plot TEXT, Genre TEXT);
+    CREATE TABLE movies (ID STRING PRIMARY KEY, Title TEXT NOT NULL, Actors TEXT, Rating TEXT, Year TEXT, Plot TEXT, Genre TEXT,Poster TEXT);
 
 Given a URL from imdb such as : 
 
