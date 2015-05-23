@@ -4,15 +4,17 @@ import java.sql.*;
  * Created by Andrew on 22/05/2015.
  */
 public class DatabaseWorker {
-    public static void insertIntoDB(Movie m){
+
+    /**
+     * Inserts the movie record inside the database.
+     * @param m
+     */
+    public void insertIntoDB(Movie m){
         Connection c = null;
         Statement stmt = null;
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
-
+            //Insert here your database name.
+            c=connectToDB("test");
             stmt = c.createStatement();
             PreparedStatement statement = c.prepareStatement("INSERT INTO movies (ID,Title,Actors,Rating,Year,plot,Genre,Poster) VALUES (?,?,?,?,?,?,?,?)");
             statement.setString(1,m.getId());
@@ -34,4 +36,25 @@ public class DatabaseWorker {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Connects to the database.
+     * @param dbname database name.
+     * @return Connection To the database.
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
+    private Connection connectToDB(String dbname) throws ClassNotFoundException, SQLException {
+        if(!dbname.endsWith(".db"))
+            dbname = dbname.concat(".db");
+        Connection c;
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:"+dbname);
+        c.setAutoCommit(false);
+        System.out.println("Opened database successfully");
+        return c;
+    }
+
+
+
 }

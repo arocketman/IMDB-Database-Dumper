@@ -9,34 +9,56 @@ import java.util.HashMap;
 
 public class Parser {
 
-    public static void fillUpDB(HashMap<String,String> map){
+    private DatabaseWorker dbWorker = new DatabaseWorker();
+
+    /**
+     * Fills up the database with the values inside the map, which will be parsed and inserted into the db.
+     * @param map map of values <Id,Title>.
+     */
+    public void fillUpDB(HashMap<String,String> map){
         for(String movieID : map.keySet()){
             insertEntry(movieID);
         }
     }
 
-    private static void insertEntry(String ID){
+    /**
+     * Inserts the movie with the given ID into the database.
+     * @param ID ID in the form of ttXXXXXXX
+     */
+    private void insertEntry(String ID){
+        Movie movie = getMovieFromJson("http://www.omdbapi.com/?i="+ID+"&plot=short&r=json",ID);
+        if(movie != null) {
+            dbWorker.insertIntoDB(movie);
+            System.out.println("Inserted : " + movie.getTitle());
+        }
+    }
+
+    /**
+     * Transforms a omdb json result to a Movie.
+     * @param json
+     * @param ID
+     * @return the built movie
+     */
+    private Movie getMovieFromJson(String json,String ID){
         JSONObject jsonObject = null;
         try {
-            jsonObject = readJsonFromUrl("http://www.omdbapi.com/?i="+ID+"&plot=short&r=json");
+            jsonObject = readJsonFromUrl(json);
+            Movie movie = new Movie(ID,jsonObject.getString("Title"),jsonObject.getString("Actors"),jsonObject.getString("imdbRating"),jsonObject.getString("Runtime"),jsonObject.getString("Year"),jsonObject.getString("Plot"),jsonObject.getString("Genre"),jsonObject.getString("Poster"));
+            return movie;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Movie movie = new Movie(ID,jsonObject.getString("Title"),jsonObject.getString("Actors"),jsonObject.getString("imdbRating"),jsonObject.getString("Runtime"),jsonObject.getString("Year"),jsonObject.getString("Plot"),jsonObject.getString("Genre"),jsonObject.getString("Poster"));
-        DatabaseWorker.insertIntoDB(movie);
-        System.out.println("Inserted : " + movie.getTitle());
+        return null;
     }
 
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    public static JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
+    /**
+     * Creates a JSONObject from a URL containing json text.
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
+    public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
         InputStream is = new URL(url).openStream();
         try {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
@@ -46,6 +68,15 @@ public class Parser {
         } finally {
             is.close();
         }
+    }
+
+    private String readAll(Reader rd) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            sb.append((char) cp);
+        }
+        return sb.toString();
     }
 
 }

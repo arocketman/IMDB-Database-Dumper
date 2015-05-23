@@ -15,26 +15,45 @@ public class Scraper {
     private static final int ENTRIES_NUMBER = 1338 - 50; //TODO: Make this dynamic.
 
     HashMap<String,String> map = new HashMap<String, String>();
+    Parser parser = new Parser();
 
+    /**
+     * Given a url it begins the scraping project. This will iterate throughout the whole page results.
+     * @param url
+     * @throws IOException
+     */
     public void getFromURL(String url) throws IOException {
         addToMapFromIMDB(url);
         for(int i = 51; i < ENTRIES_NUMBER; i+=50 )
             addToMapFromIMDB(url + "&start=" + i);
         //saveToFile(map);
-        Parser.fillUpDB(map);
+        parser.fillUpDB(map);
     }
 
+    /**
+     * given the "href" parameter it extrapolates the id in the form of : ttXXXXXXX
+     * @param url the href parameter.
+     * @return the ID of the given movie.
+     */
     private String getMovieID(String url) {
         url = url.substring("/title/".length(),"/title/".length() + "tt0000000".length());
         return url;
     }
 
-    public void saveToFile(){
+    /**
+     * Saves to file representation the given HashMap in the following fashion : "ttXXXXXXX - Movie title"
+     * @param fileName file where to save the map.
+     */
+    public void saveToFile(String fileName){
         try {
-            FileWriter fwriter = new FileWriter("IDdb.txt");
+            if(!fileName.endsWith(".txt"))
+                fileName = fileName.concat(".txt");
+            FileWriter fwriter = new FileWriter(fileName);
             BufferedWriter writer = new BufferedWriter(fwriter);
             for(String id : map.keySet()) {
                 writer.write(id);
+                writer.write(" - ");
+                writer.write(map.get(id));
                 writer.newLine();
             }
             writer.close();
@@ -43,6 +62,10 @@ public class Scraper {
         }
     }
 
+    /**
+     * Scrapes the imdb website and retrieves the titles given a search result page.
+     * @param url The url of the search page.
+     */
     private void addToMapFromIMDB(String url){
         Document doc = null;
         try {
