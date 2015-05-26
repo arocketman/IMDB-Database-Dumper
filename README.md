@@ -16,9 +16,15 @@ it fills up a SQL with all the entries.
 #TODO : 
 
  1. Automatic table creation
- 2. Documentation
  3. All fields in the database?
- 
+
+#STRUCTURE
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/arocketman/IMDB-Database-Dumper/master/Class%20Diagram.PNG"/>
+</p>
+
+
 #DEPENDENCIES
 
 ```
@@ -46,9 +52,6 @@ it fills up a SQL with all the entries.
         </dependency>
     </dependencies>
 ```
-
-
-
 
 
 
