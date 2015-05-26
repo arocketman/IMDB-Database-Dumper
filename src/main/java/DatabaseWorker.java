@@ -5,17 +5,23 @@ import java.sql.*;
  */
 public class DatabaseWorker {
 
+    private String dbName;
+
+    public DatabaseWorker(String dbName){
+        this.dbName = dbName;
+        createTable();
+    }
+
     /**
      * Inserts the movie record inside the database.
      * @param m
      */
     public void insertIntoDB(Movie m){
         Connection c = null;
-        Statement stmt = null;
         try {
             //Insert here your database name.
-            c=connectToDB("test");
-            stmt = c.createStatement();
+            c=connectToDB();
+
             PreparedStatement statement = c.prepareStatement("INSERT INTO movies (ID,Title,Actors,Rating,Year,plot,Genre,Poster) VALUES (?,?,?,?,?,?,?,?)");
             statement.setString(1,m.getId());
             statement.setString(2,m.getTitle());
@@ -27,7 +33,7 @@ public class DatabaseWorker {
             statement.setString(8,m.getPoster());
             statement.executeUpdate();
 
-            stmt.close();
+            statement.close();
             c.commit();
             c.close();
         } catch (ClassNotFoundException e) {
@@ -39,20 +45,36 @@ public class DatabaseWorker {
 
     /**
      * Connects to the database.
-     * @param dbname database name.
      * @return Connection To the database.
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    private Connection connectToDB(String dbname) throws ClassNotFoundException, SQLException {
-        if(!dbname.endsWith(".db"))
-            dbname = dbname.concat(".db");
+    private Connection connectToDB() throws ClassNotFoundException, SQLException {
+        if(!dbName.endsWith(".db"))
+            dbName = dbName.concat(".db");
         Connection c;
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:"+dbname);
+        c = DriverManager.getConnection("jdbc:sqlite:"+dbName);
         c.setAutoCommit(false);
         System.out.println("Opened database successfully");
         return c;
+    }
+
+    private void createTable(){
+        Connection c = null;
+        Statement stmt = null;
+        try{
+            c = connectToDB();
+            stmt = c.createStatement();
+            stmt.execute("CREATE TABLE IF NOT EXISTS movies (ID STRING PRIMARY KEY, Title TEXT NOT NULL, Actors TEXT, Rating TEXT, Year TEXT, Plot TEXT, Genre TEXT,Poster TEXT);");
+            stmt.close();
+            c.commit();
+            c.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 

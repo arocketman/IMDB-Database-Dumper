@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class Parser {
 
-    private DatabaseWorker dbWorker = new DatabaseWorker();
+    private DatabaseWorker dbWorker = new DatabaseWorker("databaseName");
 
     /**
      * Fills up the database with the values inside the map, which will be parsed and inserted into the db.
@@ -43,7 +43,15 @@ public class Parser {
         JSONObject jsonObject = null;
         try {
             jsonObject = readJsonFromUrl(json);
-            Movie movie = new Movie(ID,jsonObject.getString("Title"),jsonObject.getString("Actors"),jsonObject.getString("imdbRating"),jsonObject.getString("Runtime"),jsonObject.getString("Year"),jsonObject.getString("Plot"),jsonObject.getString("Genre"),jsonObject.getString("Poster"));
+            Movie movie = new Movie.Builder(ID,jsonObject.getString("Title"))
+                    .actors(jsonObject.getString("Actors"))
+                    .rating(jsonObject.getString("imdbRating"))
+                    .runtime(jsonObject.getString("Runtime"))
+                    .year(jsonObject.getString("Year"))
+                    .plot(jsonObject.getString("Plot"))
+                    .genre(jsonObject.getString("Genre"))
+                    .poster(jsonObject.getString("Poster"))
+                    .build();
             return movie;
         } catch (IOException e) {
             e.printStackTrace();

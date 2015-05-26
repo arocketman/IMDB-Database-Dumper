@@ -3,8 +3,8 @@
  */
 public class Movie {
     private String id;
-    private String genre;
     private String title;
+    private String genre;
     private String actors;
     private String rating;
     private String runtime;
@@ -12,19 +12,77 @@ public class Movie {
     private String plot;
     private String poster;
 
-    public Movie() {
+    public static class Builder{
+
+        /* Required params */
+        private final String id;
+        private final String title;
+
+        /* Optional params */
+        private String genre;
+        private String actors;
+        private String rating;
+        private String runtime;
+        private String year;
+        private String plot;
+        private String poster;
+
+        public Builder(String id, String title){
+            this.id = id;
+            this.title = title;
+        }
+
+        public Builder genre(String genre){
+            this.genre = genre;
+            return this;
+        }
+
+        public Builder actors(String actors){
+            this.actors = actors;
+            return this;
+        }
+
+        public Builder rating(String rating){
+            this.rating = rating;
+            return this;
+        }
+
+        public Builder runtime(String runtime){
+            this.runtime = runtime;
+            return this;
+        }
+
+        public Builder year(String year){
+            this.year = year;
+            return this;
+        }
+
+        public Builder plot(String plot){
+            this.plot = plot;
+            return this;
+        }
+
+        public Builder poster(String poster){
+            this.poster = poster;
+            return this;
+        }
+
+        public Movie build(){
+            return new Movie(this);
+        }
+
     }
 
-    public Movie(String id,String title, String actors, String rating, String runtime, String year, String plot,String genre,String poster) {
-        this.id = id;
-        this.title = title;
-        this.actors = actors;
-        this.rating = rating;
-        this.runtime = runtime;
-        this.year = year;
-        this.plot = plot;
-        this.genre = genre;
-        this.poster = poster;
+    private Movie(Builder builder) {
+        this.id = builder.id;
+        this.title = builder.title;
+        this.actors = builder.actors;
+        this.rating = builder.rating;
+        this.runtime = builder.runtime;
+        this.year = builder.year;
+        this.plot = builder.plot;
+        this.genre = builder.genre;
+        this.poster = builder.poster;
     }
 
     public String getTitle() {
